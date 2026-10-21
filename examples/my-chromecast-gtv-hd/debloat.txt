@@ -1,6 +1,7 @@
 # Chromecast with Google TV HD (device boreal), Google TV 14 (SDK 34), build UTTC.250917.004
-# Debloat only: stock Home (com.google.android.apps.tv.launcherx) and the setup wizard
-# (com.google.android.tungsten.setupwraith) stay ENABLED, so casting from phones keeps working.
+# Debloat plus the custom launcher (launcher/build-and-install.sh, 2026-10-21). The installer disables the
+# stock Home (com.google.android.apps.tv.launcherx); Batch 5 disables the setup wizard so the new Home
+# sticks, which breaks casting after every reboot (see README).
 # Based on examples/google-chromecast-gtv-4k/debloat.txt. Verified 2026-10-21: every entry below
 # stays disabled after a reboot (no firmware re-enable list on this build).
 #
@@ -9,7 +10,7 @@
 #
 # Kept on purpose: Google Assistant (katniss), Cast receiver (mediashell), remote firmware updates
 # (dfuservice), Google TV app (videos), ambient mode (dreamx, backdrop), Play Store / Play Services,
-# Gboard, phone remote service, launcherx, setupwraith.
+# Gboard, phone remote service.
 
 # Batch 1: telemetry and feedback
 com.google.android.feedback
@@ -35,3 +36,8 @@ com.wbd.stream                                  # HBO Max
 com.movistarplus.androidtv                      # Movistar Plus+
 com.orange.es.androidtv                         # Orange TV
 # tv.accedo.mitele_xdk                          # Mediaset Infinity: reinstalled from the Play Store, in use
+
+# Batch 5: setup wizard, so the custom launcher stays as Home. Casting from phones then fails with
+# "Untrusted device" after every reboot until setupwraith is re-enabled for a minute and disabled
+# again. The Wi-Fi network was forgotten and re-joined in Settings first, so it belongs to the system.
+com.google.android.tungsten.setupwraith

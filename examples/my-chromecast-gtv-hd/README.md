@@ -1,4 +1,4 @@
-# Chromecast with Google TV HD (boreal): debloat only
+# Chromecast with Google TV HD (boreal): debloat and custom launcher
 
 Google TV 14 (SDK 34), build UTTC.250917.004. Done on 2026-10-21.
 
@@ -11,16 +11,37 @@ Google TV 14 (SDK 34), build UTTC.250917.004. Done on 2026-10-21.
   too and later reinstalled from the Play Store because it is in use.
 - Private DNS set to AdGuard (`dns.adguard-dns.com`), which blocks ad and tracker domains. It does not
   block YouTube ads, and it does not apply while NordVPN is connected (the VPN uses its own DNS).
+- Custom launcher installed as Home (see below); the stock Home (`launcherx`) and the setup wizard
+  (`setupwraith`) are disabled.
 - Kept on purpose: Google Assistant, Cast receiver, remote firmware updates, Google TV app, ambient
-  mode, Play Store / Play Services, Gboard, phone remote, the stock Home and the setup wizard.
+  mode, Play Store / Play Services, Gboard, phone remote.
 
-## Why there is no custom launcher
+## Custom launcher
 
-On this firmware a new launcher only stays as Home if the setup wizard
-(`com.google.android.tungsten.setupwraith`) is disabled. The Cast receiver reads the device credentials
-from that wizard, so phone casting fails with "Untrusted device" after every reboot, and a Wi-Fi network
-saved during first setup is deleted when it is disabled. Casting is the point of a Chromecast, so the
-launcher half (`launcher/build-and-install.sh`) was skipped.
+Built in Docker (no JDK or Android SDK on the Mac) and installed without building:
+
+```bash
+launcher/docker-build.sh
+TV_HOST=192.168.1.144 SKIP_BUILD=1 INPUT_KEY_SERVICE=1 launcher/build-and-install.sh
+```
+
+`launcher/app/src/main/res/values/config.xml`: dock Netflix, YouTube, Prime Video, Disney+; no Live TV;
+`app_keys` maps the remote's YouTube button (keycode 190) to YouTube, which needs `INPUT_KEY_SERVICE=1`.
+Checked on 2026-10-21 with the real remote: Home, YouTube and the Settings shortcut work. The screensaver
+is still Google's ambient mode (`dreamx/.service.Backdrop`).
+
+Before disabling `setupwraith`, the Wi-Fi network saved during first setup (owned by `setupwraith`) was
+forgotten and re-joined in Settings, so it now belongs to the system and survives. `tools/disable.sh`
+refuses to disable `setupwraith` while any saved network belongs to it.
+
+**Casting after a reboot.** The Cast receiver reads the device credentials from `setupwraith`, so after
+every reboot casting from a phone fails with "Untrusted device". To fix it until the next reboot:
+
+```bash
+TV_HOST=192.168.1.144 tools/venv/bin/python -I tools/tv.py 'pm enable com.google.android.tungsten.setupwraith'
+# wait about a minute, then:
+TV_HOST=192.168.1.144 tools/venv/bin/python -I tools/tv.py 'pm disable-user --user 0 com.google.android.tungsten.setupwraith'
+```
 
 ## Reconnect ADB
 
@@ -35,7 +56,7 @@ The Mac is already paired. Port 5555 closes again on every reboot.
 
 ## Undo
 
-Everything, back to the state before the first change (packages and DNS):
+Everything, back to the state before the first change (packages, stock Home and DNS):
 
 ```bash
 TV_HOST=192.168.1.144 examples/my-chromecast-gtv-hd/restore.sh
@@ -43,6 +64,9 @@ TV_HOST=192.168.1.144 examples/my-chromecast-gtv-hd/restore.sh
 
 The package record lives in `~/.cleanyourtv/recovery-192.168.1.144-*.json`. It is keyed by this list's
 absolute path and the IP, so keep both.
+
+The custom launcher stays installed but is no longer Home; remove it with
+`tools/tv.py 'pm uninstall com.gathin.tvhome'`.
 
 The three uninstalled streaming apps cannot be re-enabled (restore prints an "unknown package" error for
 them, which is harmless); reinstall them from the Play Store.
