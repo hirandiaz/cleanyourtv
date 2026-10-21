@@ -28,8 +28,9 @@ com.google.android.play.games
 com.android.printspooler
 com.google.android.marvin.talkback              # re-enable if you need the screen reader
 
-# Batch 4: streaming apps not used (owner's choice). These were installed from the Play Store, so
-# uninstalling them from Settings > Apps is also fine.
+# Batch 4: streaming apps not used (owner's choice). Disabled first, then UNINSTALLED on 2026-10-21
+# (pm uninstall) to free ~300 MB. restore.sh prints an "unknown package" error for these four; that is
+# harmless. Reinstall them from the Play Store if wanted.
 com.wbd.stream                                  # HBO Max
 com.movistarplus.androidtv                      # Movistar Plus+
 com.orange.es.androidtv                         # Orange TV
