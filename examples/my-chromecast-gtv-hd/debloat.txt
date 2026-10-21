@@ -1,0 +1,36 @@
+# Chromecast with Google TV HD (device boreal), Google TV 14 (SDK 34), build UTTC.250917.004
+# Debloat only: stock Home (com.google.android.apps.tv.launcherx) and the setup wizard
+# (com.google.android.tungsten.setupwraith) stay ENABLED, so casting from phones keeps working.
+# Based on examples/google-chromecast-gtv-4k/debloat.txt. Verified 2026-10-21: every entry below
+# stays disabled after a reboot (no firmware re-enable list on this build).
+#
+# Apply:   TV_HOST=<ip> tools/disable.sh examples/my-chromecast-gtv-hd/debloat.txt
+# Undo:    TV_HOST=<ip> tools/restore.sh examples/my-chromecast-gtv-hd/debloat.txt com.google.android.apps.tv.launcherx
+#
+# Kept on purpose: Google Assistant (katniss), Cast receiver (mediashell), remote firmware updates
+# (dfuservice), Google TV app (videos), ambient mode (dreamx, backdrop), Play Store / Play Services,
+# Gboard, phone remote service, launcherx, setupwraith.
+
+# Batch 1: telemetry and feedback
+com.google.android.feedback
+com.android.tv.feedbackconsent
+com.google.android.tv.remotecontrol.logging     # remote usage logging
+
+# Batch 2: Privacy Sandbox / federated-learning Mainline modules. Re-enable if the Play Store or
+# Assistant misbehave.
+com.google.android.federatedcompute
+com.google.android.ondevicepersonalization.services
+com.google.android.adservices.api               # Privacy Sandbox ad services
+com.google.android.ext.adservices.api
+
+# Batch 3: preloaded apps
+com.google.android.play.games
+com.android.printspooler
+com.google.android.marvin.talkback              # re-enable if you need the screen reader
+
+# Batch 4: streaming apps not used (owner's choice). These were installed from the Play Store, so
+# uninstalling them from Settings > Apps is also fine.
+com.wbd.stream                                  # HBO Max
+com.movistarplus.androidtv                      # Movistar Plus+
+com.orange.es.androidtv                         # Orange TV
+tv.accedo.mitele_xdk                            # Mediaset Infinity / Mitele
