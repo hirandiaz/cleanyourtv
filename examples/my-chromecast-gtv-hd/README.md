@@ -6,8 +6,9 @@ Google TV 14 (SDK 34), build UTTC.250917.004. Done on 2026-10-21.
 
 - 14 packages disabled for user 0 (never uninstalled), listed with reasons in [`debloat.txt`](debloat.txt):
   telemetry and feedback, Privacy Sandbox / ad services, Play Games, Print Spooler, TalkBack, and the
-  streaming apps not in use (HBO Max, Movistar Plus+, Orange TV, Mitele). Those four were then
-  uninstalled to free space; reinstall them from the Play Store if needed.
+  streaming apps not in use (HBO Max, Movistar Plus+, Orange TV, Mitele). HBO Max, Movistar
+  Plus+ and Orange TV were then uninstalled to free space; Mitele (Mediaset Infinity) was uninstalled
+  too and later reinstalled from the Play Store because it is in use.
 - Private DNS set to AdGuard (`dns.adguard-dns.com`), which blocks ad and tracker domains. It does not
   block YouTube ads, and it does not apply while NordVPN is connected (the VPN uses its own DNS).
 - Kept on purpose: Google Assistant, Cast receiver, remote firmware updates, Google TV app, ambient
@@ -43,7 +44,7 @@ TV_HOST=192.168.1.144 examples/my-chromecast-gtv-hd/restore.sh
 The package record lives in `~/.cleanyourtv/recovery-192.168.1.144-*.json`. It is keyed by this list's
 absolute path and the IP, so keep both.
 
-The four uninstalled streaming apps cannot be re-enabled (restore prints an "unknown package" error for
+The three uninstalled streaming apps cannot be re-enabled (restore prints an "unknown package" error for
 them, which is harmless); reinstall them from the Play Store.
 
 One app only:
